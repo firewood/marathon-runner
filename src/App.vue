@@ -10,20 +10,19 @@
     </v-app-bar>
 
     <v-main>
-      <ImagePane/>
-      <HelloWorld/>
+      <MainPane/>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import ImagePane from './components/ImagePane.vue';
+import MainPane from './components/MainPane.vue';
 
 export default {
   name: 'App',
 
   components: {
-    ImagePane,
+    MainPane,
   },
 
   data: () => ({

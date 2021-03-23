@@ -17,11 +17,11 @@ Dir.chdir(dir)
 
 info = []
 Dir.chdir("#{rootdir}/visualizer")
-Dir.glob("#{rootdir}/#{dir}/*.txt") do |file|
-  score = `cargo run --release --bin vis #{input_case_filename} #{file}`.strip
-  File.rename('out.svg', file.sub('.txt', '.svg'))
-  path = "#{dir}/#{file.split('/').last}"
-  info << {rawdata: path, image: path.sub('.txt', '.svg'), score: score}
+Dir.glob("#{rootdir}/#{dir}/*.txt") do |filename|
+  score = `cargo run --release --bin vis #{input_case_filename} #{filename}`.strip
+  File.rename('out.svg', filename.sub('.txt', '.svg'))
+  filename = filename.split('/').last
+  info << {rawdata: filename, image: filename.sub('.txt', '.svg'), score: score}
 end
 puts info
 
