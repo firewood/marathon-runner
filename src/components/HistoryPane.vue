@@ -36,12 +36,13 @@ export default {
     },
     onSelect: {
       type: Function,
+      required: true,
       default: () => {}
     }
   },
 
   data: () => ({
-
+    selectedItem: -1
   }),
 }
 </script>

@@ -7,10 +7,12 @@
     >
       <span class="mr-2">Marathon runner</span>
 
+      <span class="mr-2">{{ active_history }}</span>
+
     </v-app-bar>
 
     <v-main>
-      <MainPane/>
+      <MainPane :onSelectHistory="onSelectHistory" />
     </v-main>
   </v-app>
 </template>
@@ -26,7 +28,13 @@ export default {
   },
 
   data: () => ({
-    //
+    active_history: ""
   }),
+
+  methods: {
+    onSelectHistory(history) {
+      this.active_history = history
+    }
+  }
 };
 </script>

@@ -16,7 +16,14 @@
       </v-col>
 
       <v-col cols="3">
-        <span class="mr-2">{{ currentNote }}</span>
+        <span class="mr-2">{{ currentSlide.score }}</span>
+        <v-textarea
+          name="log"
+          auto-grow
+          dense
+          readonly
+          :value="currentLog"
+        ></v-textarea>
       </v-col>
 
       <v-col cols="12">
@@ -24,7 +31,8 @@
           v-model="currentSlideIndex"
           hint="Im a hint"
           min="0"
-          max="16"
+          :max="slides.length - 1"
+          @change="onChange"
         ></v-slider>
       </v-col>
     </v-row>
@@ -32,14 +40,10 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'SlidePane',
-
-  mounted: function() {
-    setTimeout(function() {
-      this.preloading = false
-    }.bind(this), 2000)
-  },
 
   props: {
     directory: {
@@ -53,39 +57,58 @@ export default {
   },
 
   data: () => ({
-    hoge: 'fuga',
     preloading: true,
-    currentSlideIndex: 0,
-    aslides: [
-      {image: '/0000/0001.svg', memo: 'SCORE: 0.9272186390'},
-      {image: '/0000/0002.svg', memo: 'SCORE: 0.9461761388'},
-      {image: '/0000/0003.svg', memo: 'SCORE: 0.9576622611'},
-      {image: '/0000/0004.svg', memo: 'SCORE: 0.9577123120'},
-      {image: '/0000/0005.svg', memo: 'SCORE: 0.9578038986'},
-      {image: '/0000/0006.svg', memo: 'SCORE: 0.9584905915'},
-      {image: '/0000/0007.svg', memo: 'SCORE: 0.9596771750'},
-      {image: '/0000/0008.svg', memo: 'SCORE: 0.9599103288'},
-      {image: '/0000/0009.svg', memo: 'SCORE: 0.9586252157'},
-      {image: '/0000/0010.svg', memo: 'SCORE: 0.9608280499'},
-      {image: '/0000/0011.svg', memo: 'SCORE: 0.9627588833'},
-      {image: '/0000/0012.svg', memo: 'SCORE: 0.9630019665'},
-      {image: '/0000/0013.svg', memo: 'SCORE: 0.9762911114'},
-      {image: '/0000/0014.svg', memo: 'SCORE: 0.9762911114'},
-      {image: '/0000/0015.svg', memo: 'SCORE: 0.9762911114'},
-      {image: '/0000/0016.svg', memo: 'SCORE: 0.9762911114'},
-      {image: '/0000/0017.svg', memo: 'SCORE: 0.9762911114'},
-    ],
+    currentSlideIndex: -1,
+    logs: {},
+    currentLog: ""
   }),
 
   computed: {
-    currentNote: function() {
-      return 'SCORE: ' + this.slides[this.currentSlideIndex].score
+    currentSlide: function() {
+      if (this.currentSlideIndex >= 0 && this.currentSlideIndex < this.slides.length) {
+        return this.slides[this.currentSlideIndex]
+      } else {
+        return {}
+      }
+    }
+  },
+
+  watch: {
+    directory: {
+      immediate: true,
+      handler: function() {
+        this.logs = {}
+        this.preload()
+        setTimeout(function() {
+          this.currentSlideIndex = 0
+          this.onChange(0)
+        }.bind(this), 10)
+      }
     }
   },
 
   methods: {
+    preload() {
+        this.preloading = true
+        setTimeout(function() {
+          this.preloading = false
+        }.bind(this), 1000)
+    },
     imagePath(item) {
       return '/results/' + this.directory + '/' + item.image
+    },
+    onChange(index) {
+      if (index < 0 || index >= this.slides.length) return
+      this.currentLog = this.logs[index]
+      if (!this.currentLog) {
+        axios.get('/results/' + this.directory + '/' + this.slides[index].log)
+        .then(function(response) {
+          this.logs[index] = response.data
+          if (index == this.currentSlideIndex) {
+            this.currentLog = this.logs[index]
+          }
+        }.bind(this))
+      }
     }
   }
 

@@ -20,6 +20,14 @@ import HistoryPane from './HistoryPane.vue';
 export default {
   name: 'MainPane',
 
+  props: {
+    onSelectHistory: {
+      type: Function,
+      required: true,
+      default: () => {}
+    }
+  },
+
   mounted: function() {
     axios.get("/results/all.json").then(response => (this.histories = response.data.reverse()))
   },
@@ -37,7 +45,9 @@ export default {
 
   methods: {
     onSelect(index) {
+      if (index < 0 || index >= this.histories.length) return
       let history = this.histories[index]
+      this.onSelectHistory(history)
       this.directory = history
       axios.get("/results/" + history + "/info.json").then(response => (this.slides = response.data))
     }
