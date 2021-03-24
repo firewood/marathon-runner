@@ -13,6 +13,13 @@
             />
           </div>
         </div>
+        <v-slider
+          v-model="currentSlideIndex"
+          hint="Im a hint"
+          min="0"
+          :max="slides.length - 1"
+          @change="onChange"
+        ></v-slider>
       </v-col>
 
       <v-col cols="3">
@@ -24,16 +31,6 @@
           readonly
           :value="currentLog"
         ></v-textarea>
-      </v-col>
-
-      <v-col cols="12">
-        <v-slider
-          v-model="currentSlideIndex"
-          hint="Im a hint"
-          min="0"
-          :max="slides.length - 1"
-          @change="onChange"
-        ></v-slider>
       </v-col>
     </v-row>
   </v-container>
@@ -82,7 +79,7 @@ export default {
         setTimeout(function() {
           this.currentSlideIndex = 0
           this.onChange(0)
-        }.bind(this), 10)
+        }.bind(this), 50)
       }
     }
   },
