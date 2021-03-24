@@ -1,7 +1,7 @@
 .PHONY: default server build-tools
 
 run: a.out
-	./run.rb
+	./run.rb 0001
 
 default: a.out
 	./a.out < in.txt > out.txt

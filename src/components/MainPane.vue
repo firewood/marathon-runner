@@ -21,7 +21,7 @@ export default {
   name: 'MainPane',
 
   mounted: function() {
-    axios.get("/results/all.json").then(response => (this.histories = response.data))
+    axios.get("/results/all.json").then(response => (this.histories = response.data.reverse()))
   },
 
   components: {

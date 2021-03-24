@@ -6,7 +6,7 @@ require 'open3'
 
 rootdir = Dir.pwd
 target_binary = 'a.out'
-input_case = '0001'
+input_case = ARGV.first || '0001'
 input_case_filename = "#{rootdir}/visualizer/in/#{input_case}.txt"
 final_output_filename = '9999.txt'
 
@@ -51,5 +51,5 @@ begin
   end
 rescue => error
 end
-metainfo = [exec_id] + metainfo
+metainfo << exec_id
 File.open("#{allinfo_filename}", 'w') { |f| f.write(JSON.pretty_generate(metainfo)) }
