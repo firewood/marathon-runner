@@ -2,28 +2,43 @@
 
 require 'fileutils'
 require 'json'
+require 'open3'
 
 rootdir = Dir.pwd
 target_binary = 'a.out'
 input_case = '0001'
 input_case_filename = "#{rootdir}/visualizer/in/#{input_case}.txt"
+final_output_filename = '9999.txt'
 
 exec_id = Time.new.strftime('%Y%m%d_%H%M%S') + "_#{input_case}"
 dir = "public/results/#{exec_id}"
 FileUtils.mkdir_p(dir)
 
 Dir.chdir(dir)
-`#{rootdir}/#{target_binary} < #{input_case_filename}`
+logs = []
+Open3.popen3("#{rootdir}/#{target_binary} < #{input_case_filename} > #{final_output_filename}") do |_, _, stderr, _|
+  stderr.each do |line|
+    puts line
+    logs << line
+  end
+end
 
 info = []
+log_index = 0
 Dir.chdir("#{rootdir}/visualizer")
-Dir.glob("#{rootdir}/#{dir}/*.txt") do |filename|
-  score = `cargo run --release --bin vis #{input_case_filename} #{filename}`.strip
-  File.rename('out.svg', filename.sub('.txt', '.svg'))
-  filename = filename.split('/').last
-  info << {rawdata: filename, image: filename.sub('.txt', '.svg'), score: score}
+Dir.glob("#{rootdir}/#{dir}/*.txt").sort.each do |fullpath|
+  score = `cargo run --release --bin vis #{input_case_filename} #{fullpath}`.strip
+  File.rename('out.svg', fullpath.sub('.txt', '.svg'))
+  filename = fullpath.split('/').last
+  timestamp = filename.to_i
+  File.open(fullpath.sub('.txt', '.log'), 'w') do |f|
+    while log_index < logs.count && logs[log_index].to_i <= timestamp
+      f.write(logs[log_index])
+      log_index += 1
+    end
+  end
+  info << {rawdata: filename, image: filename.sub('.txt', '.svg'), log: filename.sub('.txt', '.log'), score: score}
 end
-puts info
 
 info_filename = "#{dir}/info.json"
 File.open("#{rootdir}/#{info_filename}", 'w') { |f| f.write(JSON.pretty_generate(info)) }
@@ -36,6 +51,5 @@ begin
   end
 rescue => error
 end
-metainfo << exec_id
+metainfo = [exec_id] + metainfo
 File.open("#{allinfo_filename}", 'w') { |f| f.write(JSON.pretty_generate(metainfo)) }
-
