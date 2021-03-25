@@ -7,6 +7,7 @@ require 'open3'
 rootdir = Dir.pwd
 source_code = 'main.cpp'
 target_binary = 'a.out'
+target_binary = 'main.exe' if RUBY_PLATFORM.downcase =~ /mswin|msys|mingw|cygwin|bccwin/
 input_case = ARGV.first || '0001'
 input_case_filename = "#{rootdir}/visualizer/in/#{input_case}.txt"
 final_output_filename = '9999.txt'
