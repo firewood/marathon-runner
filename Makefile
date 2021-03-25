@@ -8,7 +8,7 @@ default: a.out
 	cd visualizer && cargo run --release --bin vis ../in.txt ../out.txt
 
 a.out: main.cpp
-	g++ -g -std=c++14 $< -o $@
+	g++ -DREPORT -g -std=c++14 $< -o $@
 
 server:
 	yarn run serve

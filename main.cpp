@@ -96,6 +96,7 @@ class Solver {
 		return 1.0 - d * d;
 	}
 
+#ifdef REPORT
 	void report_if_needed() {
 		int elapsed_ms = get_elapsed_ms();
 		if (elapsed_ms - prev_reported >= 250) {
@@ -110,6 +111,9 @@ class Solver {
 			}
 		}
 	}
+#else
+	#define report_if_needed()
+#endif
 
 	bool is_overlapped(int i) {
 		for (int j = 0; j < N; ++j) {
