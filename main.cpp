@@ -261,11 +261,6 @@ class Solver {
 	}
 
 	void iterate() {
-		for (int t = 0; t < 100; ++t) {
-			for (int i = 0; i < N; ++i) {
-				simple_grow_rectangle(i, 5);
-			}
-		}
 		try_reset_and_grow();
 	}
 
@@ -278,6 +273,11 @@ public:
 	}
 
 	void run() {
+		for (int t = 0; t < 100; ++t) {
+			for (int i = 0; i < N; ++i) {
+				simple_grow_rectangle(i, 5);
+			}
+		}
 		while (get_elapsed_ms() <= (5000 - 250)) {
 			report_if_needed();
 			iterate();
