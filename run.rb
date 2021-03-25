@@ -5,6 +5,7 @@ require 'json'
 require 'open3'
 
 rootdir = Dir.pwd
+source_code = 'main.cpp'
 target_binary = 'a.out'
 input_case = ARGV.first || '0001'
 input_case_filename = "#{rootdir}/visualizer/in/#{input_case}.txt"
@@ -13,6 +14,8 @@ final_output_filename = '9999.txt'
 exec_id = Time.new.strftime('%Y%m%d_%H%M%S') + "_#{input_case}"
 dir = "public/results/#{exec_id}"
 FileUtils.mkdir_p(dir)
+
+FileUtils.copy([source_code, target_binary], dir)
 
 Dir.chdir(dir)
 logs = []
