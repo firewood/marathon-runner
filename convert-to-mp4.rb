@@ -8,7 +8,7 @@ end
 
 seq = 1
 Dir.glob("#{path}/*.svg").sort.each do |fullpath|
-  `convert -density 12 -resize 800x800 #{fullpath} #{path}/#{sprintf('%04d', seq)}.png`
+  `convert -density 20 -resize 1024x1024 #{fullpath} #{path}/#{sprintf('%04d', seq)}.png`
   seq += 1
 end
 
